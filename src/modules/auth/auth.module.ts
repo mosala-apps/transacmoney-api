@@ -8,6 +8,7 @@ import { User } from './user/entities/user.entity';
 import { UserRepository } from './user/repository/user.repositoy';
 import { UserController } from './user/user.controller';
 import { UserService } from './user/user.service';
+import { AuthController } from './auth.controller';
 
 @Module({
   imports: [
@@ -18,7 +19,7 @@ import { UserService } from './user/user.service';
     }),
     JwtModule.register({ secret: jwtConstants.secret }),
   ],
-  controllers: [UserController],
+  controllers: [UserController, AuthController],
   providers: [UserService, UserRepository, JwtStrategy],
   exports: [UserService, UserRepository],
   // exports: [UserService],
