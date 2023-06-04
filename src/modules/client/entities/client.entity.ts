@@ -5,5 +5,4 @@ import BaseUserEntity from '~/ORM/base-entities/base-user.entity';
 export class Client extends BaseUserEntity {
   @PrimaryGeneratedColumn()
   id: number;
-
 }
