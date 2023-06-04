@@ -13,6 +13,9 @@ import { ClientModule } from './client/client.module';
 import { typeOrmConfig } from 'src/ORM';
 
 import { MailerModule } from './mailer/mailer.module';
+import { AgencyModule } from './agency/agency.module';
+import { AccountModule } from './account/account.module';
+import { SubAgencyModule } from './sub-agency/sub-agency.module';
 
 @Module({
   imports: [
@@ -24,6 +27,9 @@ import { MailerModule } from './mailer/mailer.module';
     AuthModule,
     ClientModule,
     MailerModule,
+    AgencyModule,
+    AccountModule,
+    SubAgencyModule,
   ],
   controllers: [AppController],
   providers: [AppService],
