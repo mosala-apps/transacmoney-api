@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAgencyDto } from './dto/create-agency.dto';
 import { UpdateAgencyDto } from './dto/update-agency.dto';
 import { AgencyRepository } from './repository/agency.repository';
@@ -15,11 +15,19 @@ export class AgencyService {
   }
 
   findAll() {
-    return `This action returns all agency`;
+    try {
+      return this.agencyRepo.find();
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} agency`;
+    try {
+      return this.agencyRepo.findOneByOrFail({ id: id });
+    } catch (error) {
+      throw new NotFoundException(error);
+    }
   }
 
   update(id: number, updateAgencyDto: UpdateAgencyDto) {
