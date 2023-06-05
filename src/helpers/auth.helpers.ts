@@ -40,6 +40,8 @@ export class AuthHelpers {
         email: user.email,
         role: user.role,
         isActive: user.isActive,
+        agency: user?.agency,
+        subAgency: user?.subAgency,
         access_token: this.generateJWT(user),
       };
       return payload;

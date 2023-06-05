@@ -1,13 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { SubAgencyService } from './sub-agency.service';
 import { CreateSubAgencyDto } from './dto/create-sub-agency.dto';
 import { UpdateSubAgencyDto } from './dto/update-sub-agency.dto';
 
-@Controller('sub-agency')
+@Controller('subAgency')
 export class SubAgencyController {
   constructor(private readonly subAgencyService: SubAgencyService) {}
 
-  @Post()
+  @Post('/store')
   create(@Body() createSubAgencyDto: CreateSubAgencyDto) {
     return this.subAgencyService.create(createSubAgencyDto);
   }
@@ -22,12 +30,15 @@ export class SubAgencyController {
     return this.subAgencyService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSubAgencyDto: UpdateSubAgencyDto) {
+  @Patch('update/:id')
+  update(
+    @Param('id') id: string,
+    @Body() updateSubAgencyDto: UpdateSubAgencyDto,
+  ) {
     return this.subAgencyService.update(+id, updateSubAgencyDto);
   }
 
-  @Delete(':id')
+  @Delete('delete/:id')
   remove(@Param('id') id: string) {
     return this.subAgencyService.remove(+id);
   }

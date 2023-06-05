@@ -1,6 +1,8 @@
-import { Controller, Get, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param, Delete, Post } from '@nestjs/common';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { RegisterUserDto } from './dto/register-user.dto';
+import { User } from './entities/user.entity';
 
 @Controller('users')
 export class UserController {
@@ -9,6 +11,10 @@ export class UserController {
   @Get()
   findAll() {
     return this.userService.findAll();
+  }
+  @Post('store')
+  create(@Body() createUserDto: RegisterUserDto): Promise<Partial<User>> {
+    return this.userService.register(createUserDto);
   }
 
   @Get(':id')

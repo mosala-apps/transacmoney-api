@@ -8,7 +8,7 @@ export class BaseAgencyEntity extends TimesTampEntity {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   address: string;
 
   @Column()

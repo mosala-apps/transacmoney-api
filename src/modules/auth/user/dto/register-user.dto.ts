@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsEnum, IsNotEmpty, IsOptional } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsOptional } from 'class-validator';
 import { UserRoleEnum } from '~/enums/role-role.enum';
 
 export class RegisterUserDto {
@@ -20,4 +20,12 @@ export class RegisterUserDto {
   @IsOptional()
   // @IsEnum({ default: UserRoleEnum.ADMIN })
   role: UserRoleEnum;
+
+  @ApiProperty()
+  @IsOptional()
+  agencyId: number;
+
+  @ApiProperty()
+  @IsOptional()
+  subAgencyId: number;
 }

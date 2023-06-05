@@ -16,11 +16,15 @@ import { MailerService } from '~/modules/mailer/mailer.service';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { UserRoleEnum } from '~/enums/role-role.enum';
 import { ITalentResponse } from '~/interfaces/talent.response.interface';
+import { AgencyService } from '~/modules/agency/agency.service';
+import { SubAgencyService } from '~/modules/sub-agency/sub-agency.service';
 
 @Injectable()
 export class UserService {
   constructor(
     private userRepository: UserRepository,
+    private agencyService: AgencyService,
+    private subAgencyService: SubAgencyService,
     private mailerService: MailerService,
   ) {}
 
@@ -31,7 +35,15 @@ export class UserService {
       const { salt, password } = await hashPasswordWithBcrypt(user.password);
       user.salt = salt;
       user.password = password;
-
+      let entity = null;
+      if (user.role === UserRoleEnum.AGENCY) {
+        entity = await this.agencyService.findOne(registerUserDto.agencyId);
+        user.agency = entity;
+      } else if (user.role === UserRoleEnum.SUB_AGENCY) {
+        entity = await this.agencyService.findOne(registerUserDto.subAgencyId);
+        user.subAgency = entity;
+      }
+      console.log(entity);
       const userRepo = await this.userRepository.save(user);
 
       return AuthHelpers.getInstance().renderUserResponse(userRepo);
@@ -114,13 +126,22 @@ export class UserService {
   }
   async findAll(): Promise<User[]> {
     return await this.userRepository.find({
+      relations: ['agency'],
+      loadRelationIds: true,
       select: {
         id: true,
         username: true,
         email: true,
         isActive: true,
         role: true,
-        
+        agency: {
+          name: true,
+        },
+        subAgency: {
+          id: true,
+          name: true,
+        },
+        createAt: true,
       },
     });
   }

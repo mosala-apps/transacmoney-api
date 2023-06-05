@@ -15,7 +15,7 @@ import { UpdateAgencyDto } from './dto/update-agency.dto';
 export class AgencyController {
   constructor(private readonly agencyService: AgencyService) {}
 
-  @Post()
+  @Post('/store')
   create(@Body() createAgencyDto: CreateAgencyDto) {
     return this.agencyService.create(createAgencyDto);
   }
@@ -30,12 +30,12 @@ export class AgencyController {
     return this.agencyService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Patch('update/:id')
   update(@Param('id') id: string, @Body() updateAgencyDto: UpdateAgencyDto) {
     return this.agencyService.update(+id, updateAgencyDto);
   }
 
-  @Delete(':id')
+  @Delete('delete/:id')
   remove(@Param('id') id: string) {
     return this.agencyService.remove(+id);
   }
