@@ -1,11 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAgencyDto } from './dto/create-agency.dto';
 import { UpdateAgencyDto } from './dto/update-agency.dto';
+import { AgencyRepository } from './repository/agency.repository';
 
 @Injectable()
 export class AgencyService {
+  constructor(private readonly agencyRepo: AgencyRepository) {}
   create(createAgencyDto: CreateAgencyDto) {
-    return 'This action adds a new agency';
+    try {
+      return this.agencyRepo.save(createAgencyDto);
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   findAll() {

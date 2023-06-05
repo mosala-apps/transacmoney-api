@@ -16,4 +16,7 @@ export class BaseAgencyEntity extends TimesTampEntity {
 
   @Column()
   phone: string;
+
+  @Column()
+  location: string;
 }
