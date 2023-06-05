@@ -28,8 +28,8 @@ async function bootstrap() {
 
   // on configure Swagger Open Api
   const config = new DocumentBuilder()
-    .setTitle('mosala API')
-    .setDescription('Open API de mosala APP')
+    .setTitle('transacmoney API')
+    .setDescription('Open API de transacmoney APP')
     .setVersion('1.0')
     .addTag('default')
     .build();
