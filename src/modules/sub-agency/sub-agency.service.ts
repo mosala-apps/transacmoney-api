@@ -1,19 +1,33 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateSubAgencyDto } from './dto/create-sub-agency.dto';
 import { UpdateSubAgencyDto } from './dto/update-sub-agency.dto';
+import { SubAgencyRepository } from './repository/sub-agency.repository';
 
 @Injectable()
 export class SubAgencyService {
+  constructor(private readonly subAgencyRepo: SubAgencyRepository) {}
   create(createSubAgencyDto: CreateSubAgencyDto) {
-    return 'This action adds a new subAgency';
+    try {
+      return this.subAgencyRepo.save(createSubAgencyDto);
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   findAll() {
-    return `This action returns all subAgency`;
+    try {
+      return this.subAgencyRepo.find();
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} subAgency`;
+    try {
+      return this.subAgencyRepo.findOneByOrFail({ id: id });
+    } catch (error) {
+      throw new NotFoundException(error);
+    }
   }
 
   update(id: number, updateSubAgencyDto: UpdateSubAgencyDto) {
