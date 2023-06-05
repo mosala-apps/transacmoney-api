@@ -2,29 +2,30 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAgencyDto } from './dto/create-agency.dto';
 import { UpdateAgencyDto } from './dto/update-agency.dto';
 import { AgencyRepository } from './repository/agency.repository';
+import { Agency } from './entities/agency.entity';
 
 @Injectable()
 export class AgencyService {
   constructor(private readonly agencyRepo: AgencyRepository) {}
-  create(createAgencyDto: CreateAgencyDto) {
+  async create(createAgencyDto: CreateAgencyDto): Promise<Agency> {
     try {
-      return this.agencyRepo.save(createAgencyDto);
+      return await this.agencyRepo.save(createAgencyDto);
     } catch (error) {
       throw new Error(error);
     }
   }
 
-  findAll() {
+  async findAll(): Promise<Agency[]> {
     try {
-      return this.agencyRepo.find();
+      return await this.agencyRepo.find();
     } catch (error) {
       throw new Error(error);
     }
   }
 
-  findOne(id: number) {
+  async findOne(id: number): Promise<Agency> {
     try {
-      return this.agencyRepo.findOneByOrFail({ id: id });
+      return await this.agencyRepo.findOneByOrFail({ id: id });
     } catch (error) {
       throw new NotFoundException(error);
     }
