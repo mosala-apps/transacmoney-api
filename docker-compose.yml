@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+
+  transacmoney:
+    build: 
+      context: .
+      dockerfile: ./Dockerfile
+      target: development
+    command: npm start:dev
+    env_file:
+      - ./.env
+    # depends_on:
+    #   - transac-mysql
+
+  # transac-mysql:
+  #   image: mysql
+  #   ports:
+  #     - 3306 3306
