@@ -16,6 +16,9 @@ import { MailerModule } from './mailer/mailer.module';
 import { AgencyModule } from './agency/agency.module';
 import { AccountModule } from './account/account.module';
 import { SubAgencyModule } from './sub-agency/sub-agency.module';
+import { ExpeditorsModule } from './expeditors/expeditors.module';
+import { RecipientsModule } from './recipients/recipients.module';
+import { OperationsModule } from './operations/operations.module';
 
 @Module({
   imports: [
@@ -30,6 +33,9 @@ import { SubAgencyModule } from './sub-agency/sub-agency.module';
     AgencyModule,
     AccountModule,
     SubAgencyModule,
+    ExpeditorsModule,
+    RecipientsModule,
+    OperationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
