@@ -14,20 +14,23 @@ import { User } from './user/entities/user.entity';
 import { UserCredentialsDto } from './user/dto/login-user.dto';
 import { ResetPasswordDto } from './user/dto/reset-password.dto';
 import { ForgotPasswordDto } from './user/dto/forgot-password.dto';
+import { IUserResponse } from '~/interfaces/user.response.interface';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly userService: UserService) {}
 
   @Post('register')
-  create(@Body() createUserDto: RegisterUserDto): Promise<Partial<User>> {
+  create(
+    @Body() createUserDto: RegisterUserDto,
+  ): Promise<Partial<IUserResponse>> {
     return this.userService.register(createUserDto);
   }
 
   @Post('login')
   async login(
     @Body() userCredentialsDto: UserCredentialsDto,
-  ): Promise<Partial<User>> {
+  ): Promise<Partial<IUserResponse>> {
     return await this.userService.login(userCredentialsDto);
   }
   @Post('forgot-password')

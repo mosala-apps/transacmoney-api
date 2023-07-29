@@ -1,7 +1,6 @@
 import { jwtConstants } from '~/modules/auth/constants';
-import { IUserResponse } from '~/interfaces/user.response.interface';
+import { IUser, IUserResponse } from '~/interfaces/user.response.interface';
 import { JwtService } from '@nestjs/jwt';
-import { ITalentResponse } from '~/interfaces/talent.response.interface';
 
 export class AuthHelpers {
   private jwtService: JwtService;
@@ -15,7 +14,7 @@ export class AuthHelpers {
     }
     return AuthHelpers.instance;
   }
-  generateJWT(user: Partial<IUserResponse>) {
+  generateJWT(user: Partial<IUser>) {
     const today = new Date();
     const exp = new Date(today);
     exp.setDate(today.getDate() + 60);
@@ -32,46 +31,21 @@ export class AuthHelpers {
     );
   }
 
-  renderUserResponse(user: Partial<IUserResponse>): IUserResponse {
+  renderUserResponse(payload: Partial<IUser>): IUserResponse {
     try {
-      const payload: IUserResponse = {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        role: user.role,
-        isActive: user.isActive,
-        agency: user?.agency,
-        subAgency: user?.subAgency,
-        access_token: this.generateJWT(user),
+      const response: IUserResponse = {
+        user: {
+          id: payload.id,
+          username: payload.username,
+          email: payload.email,
+          role: payload.role,
+          isActive: payload.isActive,
+          agency: payload?.agency,
+          subAgency: payload?.subAgency,
+        },
+        access_token: this.generateJWT(payload),
       };
-      return payload;
-    } catch (error) {
-    } finally {
-    }
-  }
-
-  renderTalentResponse(user: Partial<ITalentResponse>): ITalentResponse {
-    try {
-      const payload: ITalentResponse = {
-        id: user.id,
-        username: user.username,
-        email: user.email,
-        role: user.role,
-        talentId: user.talentId,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        name: user.name,
-        experience: user.experience,
-        level: user.level,
-        education: user.education,
-        githubLink: user.githubLink,
-        websiteLink: user.websiteLink,
-        location: user.location,
-        phone: user.phone,
-        isActive: user.isActive,
-        access_token: this.generateJWT(user),
-      };
-      return payload;
+      return response;
     } catch (error) {
     } finally {
     }
