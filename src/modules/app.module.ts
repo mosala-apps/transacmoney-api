@@ -16,9 +16,8 @@ import { MailerModule } from './mailer/mailer.module';
 import { AgencyModule } from './agency/agency.module';
 import { AccountModule } from './account/account.module';
 import { SubAgencyModule } from './sub-agency/sub-agency.module';
-import { ExpeditorsModule } from './expeditors/expeditors.module';
-import { RecipientsModule } from './recipients/recipients.module';
-import { OperationsModule } from './operations/operations.module';
+import { TransactionModule } from './transaction/transaction.module';
+import { TransactionTypeModule } from './transaction_type/transaction_type.module';
 
 @Module({
   imports: [
@@ -33,9 +32,8 @@ import { OperationsModule } from './operations/operations.module';
     AgencyModule,
     AccountModule,
     SubAgencyModule,
-    ExpeditorsModule,
-    RecipientsModule,
-    OperationsModule,
+    TransactionModule,
+    TransactionTypeModule,
   ],
   controllers: [AppController],
   providers: [AppService],
