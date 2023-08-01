@@ -17,12 +17,12 @@ export class Account extends TimesTampEntity {
   @Column({ type: 'bigint' })
   accountNumber: number;
 
-  @CreateDateColumn()
-  openingDate: Date;
+  @Column({ type: 'float', default: 0.0 })
+  amount: number;
 
   @OneToOne(() => Agency, (agency) => agency.account)
-  agency: Agency;
+  agency?: Agency;
 
   @OneToOne(() => SubAgency, (subAgency) => subAgency.account)
-  subAgency: SubAgency;
+  subAgency?: SubAgency;
 }

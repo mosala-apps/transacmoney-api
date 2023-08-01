@@ -21,6 +21,10 @@ export class AccountService {
     }
   }
 
+  async updateAmount(id: number, amount: number) {
+    await this.accountRepo.updateAmount(id, amount)
+  }
+
   async findOne(id: number): Promise<Account> {
     try {
       return await this.accountRepo.findOneByOrFail({ id: id });
