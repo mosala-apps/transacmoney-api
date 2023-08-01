@@ -36,11 +36,11 @@ export class TransactionService {
     try {
       // retrieve amount on expeditor
       const user = await this.userService.findOne(transaction.expeditor);
-      await this[`create_${user.role}`](transaction, user, "retrieve");
+      await this[`create_${user.role}`](transaction.amount, user, "retrieve");
       
       // add amount on recipient account
       const userRec = await this.userService.findOne(transaction.expeditor);
-      await this[`create_${userRec.role}`](transaction, userRec, "add");
+      await this[`create_${userRec.role}`](transaction.amount, userRec, "add");
 
       return await this.transactionRepository.save({...transaction, status: StatusTrasaction.ACCEPTED})
     } catch (error) {
@@ -52,11 +52,11 @@ export class TransactionService {
     try {
       // enlever l'argent du compte de l'executant 
       const userExe = await this.userService.findOne(transaction.executor);
-      await this[`create_${userExe.role}`](transaction, userExe, "retrieve");
+      await this[`create_${userExe.role}`](transaction.amount, userExe, "retrieve");
 
       // mettre l'argent dans le compte de l'agence qui donne l'argent
       const user = await this.userService.findOne(transaction.final_executor);
-      await this[`create_${user.role}`](transaction, user, "add");
+      await this[`create_${user.role}`](transaction.amount, user, "add");
       return await this.transactionRepository.save(transaction)
     } catch (error) {
       
@@ -67,7 +67,7 @@ export class TransactionService {
     try {
       // ajouter de l'argent dans le compte de l'executant
       const user = await this.userService.findOne(transaction.executor);
-      await this[`create_${user.role}`](transaction, user, "add");
+      await this[`create_${user.role}`](transaction.amount, user, "add");
       return await this.transactionRepository.save(transaction)
     } catch (error) {
       
