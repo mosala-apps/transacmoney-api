@@ -3,10 +3,12 @@ import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { UserService } from '../auth/user/user.service';
 import { MailerService } from '../mailer/mailer.service';
-import { TransactionEnum } from '~/enums/transaction.enum';
+import { StatusTrasaction, TransactionEnum } from '~/enums/transaction.enum';
 import { TransactionRepository } from './repository/transaction.repository';
 import { NotFoundError } from 'rxjs';
 import { AccountService } from '../account/account.service';
+import { User } from '../auth/user/entities/user.entity';
+import { EnumActionOnAmount } from '~/helpers';
 
 @Injectable()
 export class TransactionService {
@@ -22,15 +24,63 @@ export class TransactionService {
   }
   constructor(private transactionRepository: TransactionRepository, private userService: UserService, private mailerService: MailerService) { }
   
-  async create(transaction: CreateTransactionDto) {
+  async create_subAgency(amount: number, user: User, action: EnumActionOnAmount) {
+      await this.transactionRepository[`${action}AccountAmount`](amount, {subAgency: user.subAgency.id})
+  }
+
+  async create_agency(amount: number, user: User, action: EnumActionOnAmount) {
+      await this.transactionRepository[`${action}AccountAmount`](amount, {agency: user.agency.id})
+  }
+  
+  async depositAction(transaction : CreateTransactionDto) {
     try {
-      await this.transactionRepository.updateAccountAmount(transaction.executor, transaction.amount)
-      return await this.transactionRepository.save(transaction)
-    } catch (error) { 
+      // retrieve amount on expeditor
+      const user = await this.userService.findOne(transaction.expeditor);
+      await this[`create_${user.role}`](transaction, user, "retrieve");
+      
+      // add amount on recipient account
+      const userRec = await this.userService.findOne(transaction.expeditor);
+      await this[`create_${userRec.role}`](transaction, userRec, "add");
+
+      return await this.transactionRepository.save({...transaction, status: StatusTrasaction.ACCEPTED})
+    } catch (error) {
+      throw new Error(error)
     }
   }
 
-async 
+  async withdrawalAction(transaction: CreateTransactionDto) {
+    try {
+      // enlever l'argent du compte de l'executant 
+      const userExe = await this.userService.findOne(transaction.executor);
+      await this[`create_${userExe.role}`](transaction, userExe, "retrieve");
+
+      // mettre l'argent dans le compte de l'agence qui donne l'argent
+      const user = await this.userService.findOne(transaction.final_executor);
+      await this[`create_${user.role}`](transaction, user, "add");
+      return await this.transactionRepository.save(transaction)
+    } catch (error) {
+      
+    }
+  }
+
+  async transfer_toAction(transaction: CreateTransactionDto) {
+    try {
+      // ajouter de l'argent dans le compte de l'executant
+      const user = await this.userService.findOne(transaction.executor);
+      await this[`create_${user.role}`](transaction, user, "add");
+      return await this.transactionRepository.save(transaction)
+    } catch (error) {
+      
+    }
+  }
+
+  async create(transaction: CreateTransactionDto) {
+
+    try {
+      this[`${transaction.type.toLowerCase()}Action`](transaction)
+    } catch (error) { 
+    }
+  }
 
 async userTransactions(id: number) {
   return await this.transactionRepository.userTransactions(id)
@@ -43,6 +93,7 @@ async userTransactions(id: number) {
         updatedAt: true,
         status: true,
         type: true,
+        final_executor: true,
         expeditor: true,
         recipient: true,
         executor: true

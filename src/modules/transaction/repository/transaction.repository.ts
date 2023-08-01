@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { Transactions } from '../entities/transaction.entity';
 import { ITransactionResponse } from '~/interfaces/transaction.response.interface';
 import { AccountService } from '~/modules/account/account.service';
+import { IUpdateAmountParams } from '~/helpers';
 
 @Injectable()
 export class TransactionRepository extends Repository<Transactions> {
@@ -26,8 +27,12 @@ export class TransactionRepository extends Repository<Transactions> {
     .getMany();
   }
 
-  async updateAccountAmount(idAccount: number, newAmount: number) {
-    this.accountService.updateAmount(idAccount, newAmount)
+  async retrieveAccountAmount(newAmount: number, data: IUpdateAmountParams,) {
+    this.accountService.retrieveAmount(newAmount, data)
+  }
+
+  async addAccountAmount(newAmount: number, data: IUpdateAmountParams,) {
+    this.accountService.addAmount(newAmount, data)
   }
   
 }

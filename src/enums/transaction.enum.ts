@@ -9,3 +9,4 @@ export enum StatusTrasaction{
   ACCEPTED="ACCEPTED",
   REJECTED="REJECTED"
 }
+
