@@ -11,14 +11,15 @@ export class AccountRepository extends Repository<Account> {
   async updateAmount(id: number, newAmount: number) {
     const account = await this.findOneOrFail({
       where: {
-        id
+        id,
       },
       select: {
-        amount: true
-      }
-    })
-    if ((account.amount - newAmount) < 0) throw new NotAcceptableException('Fond insuffisant dans le compte !')
-    
-    return await this.update(id, {amount: account.amount - newAmount})
+        amount: true,
+      },
+    });
+    if (account.amount - newAmount < 0)
+      throw new NotAcceptableException('Fond insuffisant dans le compte !');
+
+    return await this.update(id, { amount: account.amount - newAmount });
   }
 }

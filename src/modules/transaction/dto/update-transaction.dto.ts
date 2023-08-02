@@ -18,7 +18,6 @@ export class UpdateTransactionDto extends PartialType(CreateTransactionDto) {
   @IsNumber()
   recipient: number;
 
-  
   @ApiProperty()
   @IsNumber()
   amount: number;
