@@ -1,6 +1,5 @@
 export enum TransactionEnum {
   DEPOSIT= "DEPOSIT", // depot
-  WITHDRAWAL = "WITHDRAWAL", // retrait
   TRANSFER_TO= "TRANSFER_TO" // transfert
 }
 

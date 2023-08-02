@@ -3,72 +3,80 @@ import { Account } from '../entities/account.entity';
 import { Injectable, NotAcceptableException } from '@nestjs/common';
 import { IUpdateAmountParams } from '~/helpers';
 
-
 @Injectable()
 export class AccountRepository extends Repository<Account> {
   constructor(dataSource: DataSource) {
     super(Account, dataSource.createEntityManager());
   }
 
-  async retrieveAmount(newAmount: number, { agency, subAgency }: IUpdateAmountParams) {
+  async retrieveAmount(
+    newAmount: number,
+    { agency, subAgency }: IUpdateAmountParams,
+  ) {
     let account;
     if (agency) {
       account = await this.findOneOrFail({
         where: {
           agency: {
-            id: agency
-          }
+            id: agency,
+          },
         },
         select: {
-          amount: true
-        }
-      })
-    }
-    else {
+          amount: true,
+        },
+      });
+    } else {
       account = await this.findOneOrFail({
         where: {
           subAgency: {
-            id: subAgency
-          }
+            id: subAgency,
+          },
         },
         select: {
-          amount: true
-        }
-      })
+          amount: true,
+        },
+      });
     }
-    
-    if ((account.amount - newAmount) < 0) throw new NotAcceptableException('Fond insuffisant dans le compte !')
-    
-    return await this.update(account.id, {amount: account.amount - newAmount})
+
+    if (account.amount - newAmount < 0)
+      throw new NotAcceptableException('Fond insuffisant dans le compte !');
+
+    return await this.update(account.id, {
+      amount: account.amount - newAmount,
+    });
   }
 
-  async addAmount(newAmount: number, { agency, subAgency }: IUpdateAmountParams) {
+  async addAmount(
+    newAmount: number,
+    { agency, subAgency }: IUpdateAmountParams,
+  ) {
     let account;
     if (agency) {
       account = await this.findOneOrFail({
         where: {
           agency: {
-            id: agency
-          }
+            id: agency,
+          },
         },
         select: {
-          amount: true
-        }
-      })
-    }
-    else {
+          amount: true,
+        },
+      });
+    } else {
       account = await this.findOneOrFail({
         where: {
           subAgency: {
-            id: subAgency
-          }
+            id: subAgency,
+          },
         },
         select: {
-          amount: true
-        }
-      })
+          amount: true,
+        },
+      });
     }
-    
-    return await this.update(account.id, {amount: account.amount + newAmount})
+
+    return await this.update(account.id, {
+      amount: account.amount + newAmount,
+    });
   }
 }

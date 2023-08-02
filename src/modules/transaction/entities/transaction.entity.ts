@@ -1,10 +1,10 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
-import { TransactionEnum, StatusTrasaction } from "src/enums/transaction.enum"
+import { TransactionEnum, StatusTrasaction } from 'src/enums/transaction.enum';
 import { TimesTampEntity } from '~/ORM/base-entities/times-tamp/times-tamp.entity';
 import { User } from '~/modules/auth/user/entities/user.entity';
 
 @Entity('transactions')
-export class Transactions extends TimesTampEntity  {
+export class Transactions extends TimesTampEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -13,12 +13,12 @@ export class Transactions extends TimesTampEntity  {
     enum: TransactionEnum,
   })
   type: string;
-  
-  @ManyToOne(() => User, (user) => user.id)
-  expeditor: number;
 
-  @ManyToOne(() => User, (user) => user.id)
-  recipient: number;
+  @ManyToOne(() => User)
+  expeditor: User;
+
+  @ManyToOne(() => User)
+  recipient: User;
 
   @ManyToOne(() => User, (user) => user.id)
   final_executor: number
@@ -26,13 +26,16 @@ export class Transactions extends TimesTampEntity  {
   @Column()
   amount: number;
 
-  @Column()
-  executor: number;
+  @ManyToOne(() => User)
+  executor: User;
 
-  @Column({ 
+  @ManyToOne(() => User)
+  finalExecutor?: User;
+
+  @Column({
     type: 'enum',
     enum: StatusTrasaction,
-    default: StatusTrasaction.IN_PROGRESS
+    default: StatusTrasaction.IN_PROGRESS,
   })
   status: string;
 }

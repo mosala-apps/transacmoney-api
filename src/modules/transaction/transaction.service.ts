@@ -12,11 +12,18 @@ import { EnumActionOnAmount } from '~/helpers';
 
 @Injectable()
 export class TransactionService {
-
+  constructor(
+    private transactionRepository: TransactionRepository,
+    private userService: UserService,
+    private mailerService: MailerService,
+  ) {}
   private verifData = async (transaction) => {
     const exp = await this.userService.findOne(transaction.expeditor);
-    if (!exp) throw new NotFoundError(`L'expediteur ${transaction.expeditor} n'existe pas`)
-    
+    if (!exp)
+      throw new NotFoundError(
+        `L'expediteur ${transaction.expeditor} n'existe pas`,
+      );
+
     const rec = await this.userService.findOne(transaction.recipient);
     if (!rec) throw new NotFoundError(`L'utilisateur ${transaction.recipient} n'existe pas`)
     
@@ -93,32 +100,92 @@ async userTransactions(id: number) {
         updatedAt: true,
         status: true,
         type: true,
-        final_executor: true,
-        expeditor: true,
-        recipient: true,
-        executor: true
+        expeditor: {
+          id: true,
+          email: true,
+          role: true,
+        },
+        recipient: {
+          id: true,
+          email: true,
+          role: true,
+        },
+        executor: {
+          id: true,
+          email: true,
+          role: true,
+          agency: {
+            id: true,
+            name: true,
+          },
+          subAgency: {
+            id: true,
+            name: true,
+          },
+        },
+        finalExecutor: {
+          agency: {
+            id: true,
+            name: true,
+          },
+          subAgency: {
+            id: true,
+            name: true,
+          },
+        },
       }
     })
   }
 
   async findOne(id: number) {
     return await this.transactionRepository.findOne({
-      where: {id},
+      where: { id },
       select: {
         id: true,
         updatedAt: true,
         status: true,
         type: true,
-        expeditor: true,
-        recipient: true,
-        executor: true
-      }
-    })
+        expeditor: {
+          id: true,
+          email: true,
+          role: true,
+        },
+        recipient: {
+          id: true,
+          email: true,
+          role: true,
+        },
+        executor: {
+          id: true,
+          email: true,
+          role: true,
+          agency: {
+            id: true,
+            name: true,
+          },
+          subAgency: {
+            id: true,
+            name: true,
+          },
+        },
+        finalExecutor: {
+          agency: {
+            id: true,
+            name: true,
+          },
+          subAgency: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
   }
 
   async update(id: number, updateTransaction: UpdateTransactionDto) {
-    const transction = await this.findOne(id)
-    if (!transction) throw new NotFoundError(`La transaction ${id} n'existe pas !`)
+    const transction = await this.findOne(id);
+    if (!transction)
+      throw new NotFoundError(`La transaction ${id} n'existe pas !`);
 
     await this.transactionRepository.update(id, updateTransaction);
 
@@ -126,6 +193,6 @@ async userTransactions(id: number) {
   }
 
   async remove(id: number) {
-    return await this.transactionRepository.delete(id)
+    return await this.transactionRepository.delete(id);
   }
 }

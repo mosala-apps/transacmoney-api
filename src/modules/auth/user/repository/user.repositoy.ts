@@ -1,7 +1,7 @@
 import { DataSource, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { User } from '../entities/user.entity';
-import { IUserResponse } from '~/interfaces/user.response.interface';
+import { IUser, IUserResponse } from '~/interfaces/user.response.interface';
 
 @Injectable()
 export class UserRepository extends Repository<User> {
@@ -9,7 +9,7 @@ export class UserRepository extends Repository<User> {
     super(User, dataSource.createEntityManager());
   }
 
-  async getUserActive(paylaod: IUserResponse): Promise<User> {
+  async getUserActive(paylaod: IUser): Promise<User> {
     return await this.createQueryBuilder('u')
       .andWhere('u.username=:username')
       .andWhere('u.isActive=:isActive', {
