@@ -12,17 +12,23 @@ import { EnumActionOnAmount } from '~/helpers';
 
 @Injectable()
 export class TransactionService {
-
+  constructor(
+    private transactionRepository: TransactionRepository,
+    private userService: UserService,
+    private mailerService: MailerService,
+  ) {}
   private verifData = async (transaction) => {
     const exp = await this.userService.findOne(transaction.expeditor);
-    if (!exp) throw new NotFoundError(`L'expediteur ${transaction.expeditor} n'existe pas`)
-    
+    if (!exp)
+      throw new NotFoundError(
+        `L'expediteur ${transaction.expeditor} n'existe pas`,
+      );
+
     const rec = await this.userService.findOne(transaction.recipient);
     if (!rec) throw new NotFoundError(`L'utilisateur ${transaction.recipient} n'existe pas`)
     
     if (TransactionEnum[transaction.type]) throw new NotFoundError(`le type ${transaction.type} n'est pas correcte`)
   }
-  constructor(private transactionRepository: TransactionRepository, private userService: UserService, private mailerService: MailerService) { }
   
   async create_subAgency(amount: number, user: User, action: EnumActionOnAmount) {
       await this.transactionRepository[`${action}AccountAmount`](amount, {subAgency: user.subAgency.id})
@@ -35,11 +41,11 @@ export class TransactionService {
   async depositAction(transaction : CreateTransactionDto) {
     try {
       // retrieve amount on expeditor
-      const user = await this.userService.findOne(transaction.expeditor);
+      const user = await this.userService.findOne(transaction.executorId);
       await this[`create_${user.role}`](transaction.amount, user, "retrieve");
       
       // add amount on recipient account
-      const userRec = await this.userService.findOne(transaction.expeditor);
+      const userRec = await this.userService.findOne(transaction.executorId);
       await this[`create_${userRec.role}`](transaction.amount, userRec, "add");
 
       return await this.transactionRepository.save({...transaction, status: StatusTrasaction.ACCEPTED})
@@ -48,14 +54,14 @@ export class TransactionService {
     }
   }
 
-  async withdrawalAction(transaction: CreateTransactionDto) {
+  async withdrawalAction(transaction: UpdateTransactionDto) {
     try {
       // enlever l'argent du compte de l'executant 
-      const userExe = await this.userService.findOne(transaction.executor);
+      const userExe = await this.userService.findOne(transaction.executorId);
       await this[`create_${userExe.role}`](transaction.amount, userExe, "retrieve");
 
       // mettre l'argent dans le compte de l'agence qui donne l'argent
-      const user = await this.userService.findOne(transaction.final_executor);
+      const user = await this.userService.findOne(transaction.finalExecutorId);
       await this[`create_${user.role}`](transaction.amount, user, "add");
       return await this.transactionRepository.save(transaction)
     } catch (error) {
@@ -66,7 +72,7 @@ export class TransactionService {
   async transfer_toAction(transaction: CreateTransactionDto) {
     try {
       // ajouter de l'argent dans le compte de l'executant
-      const user = await this.userService.findOne(transaction.executor);
+      const user = await this.userService.findOne(transaction.executorId);
       await this[`create_${user.role}`](transaction.amount, user, "add");
       return await this.transactionRepository.save(transaction)
     } catch (error) {
@@ -93,39 +99,102 @@ async userTransactions(id: number) {
         updatedAt: true,
         status: true,
         type: true,
-        final_executor: true,
-        expeditor: true,
-        recipient: true,
-        executor: true
+        expeditor: {
+          id: true,
+          email: true,
+          role: true,
+        },
+        recipient: {
+          id: true,
+          email: true,
+          role: true,
+        },
+        executor: {
+          id: true,
+          email: true,
+          role: true,
+          agency: {
+            id: true,
+            name: true,
+          },
+          subAgency: {
+            id: true,
+            name: true,
+          },
+        },
+        finalExecutor: {
+          agency: {
+            id: true,
+            name: true,
+          },
+          subAgency: {
+            id: true,
+            name: true,
+          },
+        },
       }
     })
   }
 
   async findOne(id: number) {
     return await this.transactionRepository.findOne({
-      where: {id},
+      where: { id },
       select: {
         id: true,
         updatedAt: true,
         status: true,
         type: true,
-        expeditor: true,
-        recipient: true,
-        executor: true
-      }
-    })
+        expeditor: {
+          id: true,
+          email: true,
+          role: true,
+        },
+        recipient: {
+          id: true,
+          email: true,
+          role: true,
+        },
+        executor: {
+          id: true,
+          email: true,
+          role: true,
+          agency: {
+            id: true,
+            name: true,
+          },
+          subAgency: {
+            id: true,
+            name: true,
+          },
+        },
+        finalExecutor: {
+          agency: {
+            id: true,
+            name: true,
+          },
+          subAgency: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    });
   }
 
   async update(id: number, updateTransaction: UpdateTransactionDto) {
-    const transction = await this.findOne(id)
-    if (!transction) throw new NotFoundError(`La transaction ${id} n'existe pas !`)
+    const transction = await this.findOne(id);
+    if (!transction)
+      throw new NotFoundError(`La transaction ${id} n'existe pas !`);
 
-    await this.transactionRepository.update(id, updateTransaction);
+    try {
+      this[`${updateTransaction.type.toLowerCase()}Action`](updateTransaction)
+    } catch (error) { 
+    }
 
     return this.findOne(id);
   }
 
   async remove(id: number) {
-    return await this.transactionRepository.delete(id)
+    return await this.transactionRepository.delete(id);
   }
 }
