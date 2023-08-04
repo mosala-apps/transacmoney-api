@@ -12,19 +12,18 @@ export class TransactionRepository extends Repository<Transactions> {
   }
 
   async userTransactions(id: number) {
-  return await this
-    .createQueryBuilder("q")
-    .where("q.expeditor = :id OR q.recipient = :id", { id })
-    .select([
-      "q.id",
-      "q.updatedAt",
-      "q.status",
-      "q.type",
-      "q.expeditor",
-      "q.recipient",
-      "q.executor"
-    ])
-    .getMany();
+    return await this.createQueryBuilder('q')
+      .where('q.expeditor = :id OR q.recipient = :id', { id })
+      .select([
+        'q.id',
+        'q.updatedAt',
+        'q.status',
+        'q.type',
+        'q.expeditor',
+        'q.recipient',
+        'q.executor',
+      ])
+      .getMany();
   }
 
   async retrieveAccountAmount(newAmount: number, data: IUpdateAmountParams,) {
@@ -34,5 +33,4 @@ export class TransactionRepository extends Repository<Transactions> {
   async addAccountAmount(newAmount: number, data: IUpdateAmountParams,) {
     this.accountService.addAmount(newAmount, data)
   }
-  
 }
