@@ -9,15 +9,11 @@ export class CreateTransactionDto {
 
   @ApiProperty()
   @IsNotEmpty()
-  expeditor: number;
+  expeditorId: number;
 
   @ApiProperty()
   @IsNotEmpty()
-  recipient: number;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  final_executor: number;
+  recipientId: number;
 
   @ApiProperty()
   @IsNumber()
@@ -27,7 +23,7 @@ export class CreateTransactionDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsNumber()
-  executor: number;
+  executorId: number;
 
 
   @ApiProperty()
