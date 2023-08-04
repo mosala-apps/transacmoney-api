@@ -11,6 +11,12 @@ import { AccountModule } from '../account/account.module';
 @Module({
   imports: [AccountModule],
   controllers: [TransactionController],
-  providers: [TransactionService, UserService, UserRepository, JwtStrategy, TransactionRepository],
+  providers: [
+    TransactionService,
+    UserService,
+    UserRepository,
+    JwtStrategy,
+    TransactionRepository,
+  ],
 })
 export class TransactionModule {}
