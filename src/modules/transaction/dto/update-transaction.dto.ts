@@ -9,24 +9,12 @@ export class UpdateTransactionDto extends PartialType(CreateTransactionDto) {
   type: TransactionEnum;
 
   @ApiProperty()
-  @IsNotEmpty()
-  @IsNumber()
-  expeditor: number;
-
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsNumber()
-  recipient: number;
-
-  
-  @ApiProperty()
   @IsNumber()
   amount: number;
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsNumber()
-  executor: number;
+  finalExecutorId: number;
 
   @ApiProperty()
   @IsNotEmpty()

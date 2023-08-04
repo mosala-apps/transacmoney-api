@@ -3,6 +3,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { Account } from './entities/account.entity';
+import { IUpdateAmountParams } from '~/helpers';
 
 @Injectable()
 export class AccountService {
@@ -21,8 +22,12 @@ export class AccountService {
     }
   }
 
-  async updateAmount(id: number, amount: number) {
-    await this.accountRepo.updateAmount(id, amount)
+  async retrieveAmount(amount: number, data: IUpdateAmountParams) {
+    await this.accountRepo.retrieveAmount(amount, data)
+  }
+
+  async addAmount(amount: number, data: IUpdateAmountParams) {
+    await this.accountRepo.addAmount(amount, data)
   }
 
   async findOne(id: number): Promise<Account> {
