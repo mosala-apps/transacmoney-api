@@ -7,9 +7,12 @@ import { UserRepository } from '../auth/user/repository/user.repositoy';
 import { TransactionRepository } from './repository/transaction.repository';
 import { AccountService } from '../account/account.service';
 import { AccountModule } from '../account/account.module';
+import { CommisionModule } from '../commision/commision.module';
+import { CommisionService } from '../commision/commision.service';
+import { CommisionRepository } from '../commision/repository/commision.repository';
 
 @Module({
-  imports: [AccountModule],
+  imports: [AccountModule, CommisionModule],
   controllers: [TransactionController],
   providers: [
     TransactionService,
@@ -17,6 +20,8 @@ import { AccountModule } from '../account/account.module';
     UserRepository,
     JwtStrategy,
     TransactionRepository,
+    CommisionRepository,
+    CommisionService
   ],
 })
 export class TransactionModule {}
