@@ -14,8 +14,8 @@ export class Account extends TimesTampEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ type: 'bigint' })
-  accountNumber: number;
+  @Column()
+  accountNumber: string;
 
   @Column({ type: 'float', default: 0.0 })
   amount: number;

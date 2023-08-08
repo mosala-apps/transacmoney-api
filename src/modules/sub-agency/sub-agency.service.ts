@@ -3,13 +3,25 @@ import { CreateSubAgencyDto } from './dto/create-sub-agency.dto';
 import { UpdateSubAgencyDto } from './dto/update-sub-agency.dto';
 import { SubAgencyRepository } from './repository/sub-agency.repository';
 import { SubAgency } from './entities/sub-agency.entity';
+import { AccountRepository } from '../account/repository/account.repository';
+import { generateAccountNumber } from '~/helpers';
+import { DeepPartial } from 'typeorm';
+import { Account } from '../account/entities/account.entity';
 
 @Injectable()
 export class SubAgencyService {
-  constructor(private readonly subAgencyRepo: SubAgencyRepository) {}
+  constructor(private readonly subAgencyRepo: SubAgencyRepository, private accountRepo: AccountRepository) {}
   async create(createSubAgencyDto: CreateSubAgencyDto): Promise<SubAgency> {
     try {
-      return await this.subAgencyRepo.save(createSubAgencyDto);
+      const subAgency = await this.subAgencyRepo.save(createSubAgencyDto);
+
+      const newAccount: DeepPartial<Account> = {
+        accountNumber: generateAccountNumber(), amount: 400,
+        subAgency,
+      }
+      await this.accountRepo.save(newAccount)
+      return subAgency;
+      return 
     } catch (error) {
       throw new Error(error);
     }

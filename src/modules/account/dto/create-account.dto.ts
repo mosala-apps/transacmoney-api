@@ -4,8 +4,7 @@ import { IsNotEmpty, IsNumber, IsOptional } from "class-validator";
 export class CreateAccountDto {
   @ApiProperty()
   @IsNotEmpty()
-  @IsNumber()
-  accountNumber: number;
+  accountNumber: string;
 
   @ApiProperty()
   @IsNotEmpty()
