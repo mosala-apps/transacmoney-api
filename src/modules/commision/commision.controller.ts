@@ -1,6 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param } from '@nestjs/common';
 import { CommisionService } from './commision.service';
-import { CreateCommisionDto } from './dto/create-commision.dto';
 import { UpdateCommisionDto } from './dto/update-commision.dto';
 import { CommisionInfoDto } from './dto/commsion-info.dto';
 
@@ -19,13 +18,15 @@ export class CommisionController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: number, @Body('commision') updateCommisionDto: UpdateCommisionDto) {
+  update(
+    @Param('id') id: number,
+    @Body('commision') updateCommisionDto: UpdateCommisionDto,
+  ) {
     return this.commisionService.update(+id, updateCommisionDto);
   }
 
   @Get('/resume')
-  resume(@Body('amount') amount: number, @Body("code") code: CommisionInfoDto) {
+  resume(@Body('amount') amount: number, @Body('code') code: CommisionInfoDto) {
     return this.commisionService.calculCommsion(amount, code);
   }
-
 }

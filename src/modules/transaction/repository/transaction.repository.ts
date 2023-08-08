@@ -26,11 +26,11 @@ export class TransactionRepository extends Repository<Transactions> {
       .getMany();
   }
 
-  async retrieveAccountAmount(newAmount: number, data: IUpdateAmountParams,) {
-    this.accountService.retrieveAmount(newAmount, data)
+  async retrieveAccountAmount(newAmount: number, data: IUpdateAmountParams) {
+    this.accountService.retrieveAmount(newAmount, data);
   }
 
-  async addAccountAmount(newAmount: number, data: IUpdateAmountParams,) {
-    this.accountService.addAmount(newAmount, data)
+  async addAccountAmount(newAmount: number, data: IUpdateAmountParams) {
+    this.accountService.addAmount(newAmount, data);
   }
 }
