@@ -18,6 +18,9 @@ import { AccountModule } from './account/account.module';
 import { SubAgencyModule } from './sub-agency/sub-agency.module';
 import { TransactionModule } from './transaction/transaction.module';
 import { TransactionTypeModule } from './transaction_type/transaction_type.module';
+import { CurrencyModule } from './currency/currency.module';
+import { CountryModule } from './country/country.module';
+import { CommisionModule } from './commision/commision.module';
 
 @Module({
   imports: [
@@ -34,6 +37,9 @@ import { TransactionTypeModule } from './transaction_type/transaction_type.modul
     SubAgencyModule,
     TransactionModule,
     TransactionTypeModule,
+    CurrencyModule,
+    CountryModule,
+    CommisionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -9,6 +9,13 @@ import { NotFoundError } from 'rxjs';
 import { AccountService } from '../account/account.service';
 import { User } from '../auth/user/entities/user.entity';
 import { EnumActionOnAmount } from '~/helpers';
+import { CommisionService } from '../commision/commision.service';
+
+interface countriesCodes {
+  to: string;
+  from: string;
+}
+
 
 @Injectable()
 export class TransactionService {
@@ -16,6 +23,7 @@ export class TransactionService {
     private transactionRepository: TransactionRepository,
     private userService: UserService,
     private mailerService: MailerService,
+    private commisionService: CommisionService
   ) {}
   private verifData = async (transaction) => {
     const exp = await this.userService.findOne(transaction.expeditor);
@@ -69,10 +77,20 @@ export class TransactionService {
     }
   }
 
+  private async calculCommision(amount: number, countryCodes: countriesCodes) {
+    
+  }
+
   async transfer_toAction(transaction: CreateTransactionDto) {
     try {
       // ajouter de l'argent dans le compte de l'executant
       const user = await this.userService.findOne(transaction.executorId);
+
+      if (transaction.countryFrom !== transaction.countryTo){
+        transaction.amountWithCommision = await this.commisionService.calculCommsion(transaction.amount, {code: "INT"});
+      } else {
+        transaction.amountWithCommision = await this.commisionService.calculCommsion(transaction.amount, {code: "LOC"});
+      }
       await this[`create_${user.role}`](transaction.amount, user, "add");
       return await this.transactionRepository.save(transaction)
     } catch (error) {
@@ -132,6 +150,22 @@ async userTransactions(id: number) {
             name: true,
           },
         },
+        countryFrom: {
+          id: true,
+          name: true,
+          code: true 
+        },
+        countryTo: {
+          id: true,
+          name: true,
+          code: true 
+        },
+        currency: {
+          id: true,
+          code: true,
+          name: true
+        },
+        amountWithCommision: true
       }
     })
   }
@@ -177,6 +211,22 @@ async userTransactions(id: number) {
             name: true,
           },
         },
+        countryFrom: {
+          id: true,
+          name: true,
+          code: true 
+        },
+        countryTo: {
+          id: true,
+          name: true,
+          code: true 
+        },
+        currency: {
+          id: true,
+          code: true,
+          name: true
+        },
+        amountWithCommision: true
       },
     });
   }

@@ -25,7 +25,25 @@ export class CreateTransactionDto {
   @IsNumber()
   executorId: number;
 
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
+  currencyId: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
+  countryFrom: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  @IsNumber()
+  countryTo: number;
 
   @ApiProperty()
   status: StatusTrasaction;
+  
+  @ApiProperty()
+  @IsNumber()
+  amountWithCommision: number;
 }

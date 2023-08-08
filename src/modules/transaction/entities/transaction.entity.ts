@@ -2,6 +2,8 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { TransactionEnum, StatusTrasaction } from 'src/enums/transaction.enum';
 import { TimesTampEntity } from '~/ORM/base-entities/times-tamp/times-tamp.entity';
 import { User } from '~/modules/auth/user/entities/user.entity';
+import { Country } from '~/modules/country/entities/country.entity';
+import { Currency } from '~/modules/currency/entities/currency.entity';
 
 @Entity('transactions')
 export class Transactions extends TimesTampEntity {
@@ -20,9 +22,6 @@ export class Transactions extends TimesTampEntity {
   @ManyToOne(() => User)
   recipient: User;
 
-  @ManyToOne(() => User)
-  final_executor: number
-
   @Column()
   amount: number;
 
@@ -38,4 +37,16 @@ export class Transactions extends TimesTampEntity {
     default: StatusTrasaction.IN_PROGRESS,
   })
   status: string;
+
+  @ManyToOne(() => Currency)
+  currency: Currency;
+
+  @Column()
+  amountWithCommision: number;
+
+  @ManyToOne(() => Country)
+  countryFrom
+
+  @ManyToOne(() => Country)
+  countryTo
 }

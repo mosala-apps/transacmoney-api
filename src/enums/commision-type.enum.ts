@@ -1,0 +1,1 @@
+export type CommsionType = "INT" | "LOC"
