@@ -66,19 +66,15 @@ export class TransactionService {
     try {
       // enlever l'argent du compte de l'executant 
       const userExe = await this.userService.findOne(transaction.executorId);
-      await this[`create_${userExe.role}`](transaction.amount, userExe, "retrieve");
+      await this[`create_${userExe.role}`](transaction.amountWithCommision, userExe, "retrieve");
 
       // mettre l'argent dans le compte de l'agence qui donne l'argent
       const user = await this.userService.findOne(transaction.finalExecutorId);
-      await this[`create_${user.role}`](transaction.amount, user, "add");
+      await this[`create_${user.role}`](transaction.amountWithCommision, user, "add");
       return await this.transactionRepository.save(transaction)
     } catch (error) {
       
     }
-  }
-
-  private async calculCommision(amount: number, countryCodes: countriesCodes) {
-    
   }
 
   async transfer_toAction(transaction: CreateTransactionDto) {
@@ -91,7 +87,7 @@ export class TransactionService {
       } else {
         transaction.amountWithCommision = await this.commisionService.calculCommsion(transaction.amount, {code: "LOC"});
       }
-      await this[`create_${user.role}`](transaction.amount, user, "add");
+      await this[`create_${user.role}`](transaction.amountWithCommision, user, "add");
       return await this.transactionRepository.save(transaction)
     } catch (error) {
       
