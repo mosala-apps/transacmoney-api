@@ -17,8 +17,8 @@ export class AgencyService {
 
       const newAccount: DeepPartial<Account> = {
         accountNumber: generateAccountNumber(), amount: 400,
-        agency,
-      }
+        agency
+      } 
       await this.accountRepo.save(newAccount)
       return agency;
     } catch (error) {
@@ -28,7 +28,23 @@ export class AgencyService {
 
   async findAll(): Promise<Agency[]> {
     try {
-      return await this.agencyRepo.find();
+      return await this.agencyRepo.find({
+        relations: ['account'],
+        select: {
+          createAt: true,
+          updatedAt: true,
+          id: true,
+          name: true,
+          email: true,
+          phone: true,
+          location: true,
+          account: {
+            id: true,
+            amount: true,
+            accountNumber: true,
+          }
+        }
+      });
     } catch (error) {
       throw new Error(error);
     }
@@ -36,17 +52,33 @@ export class AgencyService {
 
   async findOne(id: number): Promise<Agency> {
     try {
-      return await this.agencyRepo.findOneByOrFail({ id: id });
+      return await this.agencyRepo.findOne({ where: { id: id }, 
+        relations: ['account'],
+        select: {
+          createAt: true,
+          updatedAt: true,
+          id: true,
+          name: true,
+          email: true,
+          phone: true,
+          location: true,
+          account: {
+            id: true,
+            amount: true,
+            accountNumber: true,
+          }
+        }
+       });
     } catch (error) {
       throw new NotFoundException(error);
     }
   }
 
-  update(id: number, updateAgencyDto: UpdateAgencyDto) {
-    return `This action updates a #${id} agency`;
+  async update(id: number, updateAgencyDto: UpdateAgencyDto) {
+    return await this.agencyRepo.update(id, updateAgencyDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} agency`;
+  async remove(id: number) {
+    return await this.agencyRepo.delete(id);
   }
 }
