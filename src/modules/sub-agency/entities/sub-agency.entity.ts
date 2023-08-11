@@ -3,7 +3,7 @@ import { BaseAgencyEntity } from '~/ORM/base-entities/base-agency.entity';
 import { Account } from '~/modules/account/entities/account.entity';
 import { User } from '~/modules/auth/user/entities/user.entity';
 
-@Entity('base_agencies')
+@Entity('sub_agencies')
 export class SubAgency extends BaseAgencyEntity {
   @OneToOne(() => Account, (account) => account.subAgency)
   @JoinColumn()
