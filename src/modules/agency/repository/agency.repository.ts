@@ -7,4 +7,5 @@ export class AgencyRepository extends Repository<Agency> {
   constructor(dataSource: DataSource) {
     super(Agency, dataSource.createEntityManager());
   }
+
 }
