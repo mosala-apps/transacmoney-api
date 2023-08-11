@@ -29,7 +29,23 @@ export class SubAgencyService {
 
   async findAll(): Promise<SubAgency[]> {
     try {
-      return await this.subAgencyRepo.find();
+      return await this.subAgencyRepo.find({
+        relations: ['account'],
+        select: {
+          createAt: true,
+          updatedAt: true,
+          id: true,
+          name: true,
+          email: true,
+          phone: true,
+          location: true,
+          account: {
+            id: true,
+            amount: true,
+            accountNumber: true,
+          }
+        }
+      });
     } catch (error) {
       throw new Error(error);
     }
@@ -37,17 +53,33 @@ export class SubAgencyService {
 
   async findOne(id: number): Promise<SubAgency> {
     try {
-      return await this.subAgencyRepo.findOneByOrFail({ id: id });
+      return await this.subAgencyRepo.findOne({ where : {id: id}, 
+        relations: ['account'],
+        select: {
+          createAt: true,
+          updatedAt: true,
+          id: true,
+          name: true,
+          email: true,
+          phone: true,
+          location: true,
+          account: {
+            id: true,
+            amount: true,
+            accountNumber: true,
+          }
+        }
+       });
     } catch (error) {
       throw new NotFoundException(error);
     }
   }
 
-  update(id: number, updateSubAgencyDto: UpdateSubAgencyDto) {
-    return `This action updates a #${id} subAgency`;
+  async update(id: number, updateSubAgencyDto: UpdateSubAgencyDto) {
+    return await this.subAgencyRepo.update(id, updateSubAgencyDto);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} subAgency`;
+    return this.subAgencyRepo.delete(id);
   }
 }
