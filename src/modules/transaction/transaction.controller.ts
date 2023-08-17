@@ -23,7 +23,6 @@ export class TransactionController {
 
   @Get()
   findAll(@CurrentUser() currentUser: User) {
-    console.log(currentUser)
     return this.transactionService.findAll();
   }
 
