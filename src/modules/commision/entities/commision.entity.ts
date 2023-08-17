@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
 import { TimesTampEntity } from '~/ORM/base-entities/times-tamp/times-tamp.entity';
 
 @Entity('commisions')
