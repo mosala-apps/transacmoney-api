@@ -10,6 +10,8 @@ import { AccountService } from '../account/account.service';
 import { User } from '../auth/user/entities/user.entity';
 import { EnumActionOnAmount } from '~/helpers';
 import { CommisionService } from '../commision/commision.service';
+import { Between } from 'typeorm';
+import { Transactions } from './entities/transaction.entity';
 
 interface countriesCodes {
   to: string;
@@ -238,6 +240,24 @@ async userTransactions(id: number) {
     }
 
     return this.findOne(id);
+  }
+
+  async statistique(currentUser: User, currencyId, dateBegin: Date, dateEnd: Date): Promise<Transactions[]>  {
+   
+  const transactions = await this.transactionRepository.find({
+    relations: ['finalExecutor', 'currency'],
+    where: {
+      finalExecutor: {
+        id: currentUser.id
+      },
+      currency: {
+        id: currencyId
+      },
+      updatedAt: Between(dateBegin, dateEnd),
+    },
+  });
+
+  return transactions;
   }
 
   async remove(id: number) {
