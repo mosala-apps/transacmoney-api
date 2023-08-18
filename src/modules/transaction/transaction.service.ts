@@ -7,9 +7,9 @@ import { StatusTrasaction, TransactionEnum } from '~/enums/transaction.enum';
 import { TransactionRepository } from './repository/transaction.repository';
 import { NotFoundError } from 'rxjs';
 import { User } from '../auth/user/entities/user.entity';
-import { EnumActionOnAmount } from '~/helpers';
+import { EnumActionOnAmount, StatsData } from '~/helpers';
 import { CommisionService } from '../commision/commision.service';
-import { Between } from 'typeorm';
+import { Between, Brackets, In } from 'typeorm';
 import { Transactions } from './entities/transaction.entity';
 
 interface countriesCodes {
@@ -262,22 +262,79 @@ export class TransactionService {
     return this.findOne(id);
   }
 
-  async statistique(currentUser: User, currencyId, dateBegin: Date, dateEnd: Date): Promise<Transactions[]>  {
-   
-  const transactions = await this.transactionRepository.find({
-    relations: ['finalExecutor', 'currency'],
-    where: {
-      finalExecutor: {
-        id: currentUser.id
+  async statistiqueFinalExecutor(currentUser: User, currencyId, dateBegin: Date, dateEnd: Date): Promise<StatsData[]>  {
+    const transactions = await this.transactionRepository.find({
+      relations: ['finalExecutor', 'currency'],
+      where: {
+        finalExecutor: {
+          id: currentUser.id
+        },
+        currency: {
+          id: currencyId
+        },
+        updatedAt: Between(dateBegin, dateEnd),
       },
-      currency: {
-        id: currencyId
-      },
-      updatedAt: Between(dateBegin, dateEnd),
-    },
-  });
+    });
 
-  return transactions;
+    const commissionStatistics = transactions.map(transaction => {
+    const comission = (transaction?.amountWithCommision || 0) - (transaction?.amount || 0);
+    return {
+      transaction,
+      comission,
+      };
+    });
+  
+    return commissionStatistics;
+  }
+
+  async statistiqueIntervention(currentUser: User, currencyId, dateBegin: Date, dateEnd: Date): Promise<StatsData[]>  {
+    return await this.transactionRepository.statistiqueIntervention(currentUser, currencyId, dateBegin, dateEnd)
+    
+  }
+
+
+  async statistiqueInterventionUser(currentUser: User, currencyId, dateBegin: Date, dateEnd: Date): Promise<Transactions[]>{
+    return await this.transactionRepository.statistiqueInterventionUser(currentUser, currencyId, dateBegin, dateEnd);
+  }
+
+
+
+  
+    //  for super_admin
+  async allStatistiqueFinalExecutor(finalExecutors: string[], currencyId, dateBegin: Date, dateEnd: Date): Promise<StatsData[]>  {
+   
+    const transactions = await this.transactionRepository.find({
+      relations: ['finalExecutor', 'currency'],
+      where: {
+        finalExecutor: {
+          id: In(finalExecutors)
+        },
+        currency: {
+          id: currencyId
+        },
+        updatedAt: Between(dateBegin, dateEnd),
+      },
+    });
+
+    const commissionStatistics = transactions.map(transaction => {
+    const comission = (transaction?.amountWithCommision || 0) - (transaction?.amount || 0);
+    return {
+      transaction,
+      comission,
+      };
+    });
+  
+    return commissionStatistics;
+  }
+
+  //  for super_admin
+  async allStatistiqueIntervention(executors: string[], currencyId, dateBegin: Date, dateEnd: Date): Promise<StatsData[]>  {
+    return await this.transactionRepository.allStatistiqueIntervention(executors, currencyId, dateBegin, dateEnd);
+  }
+
+  // Statistique transaction for not angencyType entity for super_admin
+  async allStatistiqueInterventionUser(executors: string[], currencyId, dateBegin: Date, dateEnd: Date): Promise<StatsData[]>{
+    return await this.transactionRepository.allStatistiqueInterventionUser(executors, currencyId, dateBegin, dateEnd);
   }
 
   async remove(id: number) {

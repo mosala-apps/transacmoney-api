@@ -1,6 +1,7 @@
 import { ConflictException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { HashInfoType } from '~/interfaces/hash-info.type';
+import { Transactions } from '~/modules/transaction/entities/transaction.entity';
 export const displayConflictExceptionMessage = (
   error: any,
   message: string,
@@ -51,4 +52,9 @@ export interface IUpdateAmountParams{
 export enum EnumActionOnAmount{
   add="add",
   retrieve="retrieve"
+}
+
+export interface StatsData {
+  transaction: Transactions;
+  comission: number;
 }
