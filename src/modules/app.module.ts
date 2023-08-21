@@ -21,6 +21,7 @@ import { TransactionTypeModule } from './transaction_type/transaction_type.modul
 import { CurrencyModule } from './currency/currency.module';
 import { CountryModule } from './country/country.module';
 import { CommisionModule } from './commision/commision.module';
+import { CaslModule } from './casl/casl.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { CommisionModule } from './commision/commision.module';
     CurrencyModule,
     CountryModule,
     CommisionModule,
+    CaslModule,
   ],
   controllers: [AppController],
   providers: [AppService],

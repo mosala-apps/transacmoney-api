@@ -10,9 +10,11 @@ import { AccountModule } from '../account/account.module';
 import { CommisionModule } from '../commision/commision.module';
 import { CommisionService } from '../commision/commision.service';
 import { CommisionRepository } from '../commision/repository/commision.repository';
+import { CaslModule } from '../casl/casl.module';
+import { CaslAbilityFactory } from '../casl/casl-ability.factory/casl-ability.factory';
 
 @Module({
-  imports: [AccountModule, CommisionModule],
+  imports: [AccountModule, CommisionModule, CaslModule],
   controllers: [TransactionController],
   providers: [
     TransactionService,
@@ -21,7 +23,8 @@ import { CommisionRepository } from '../commision/repository/commision.repositor
     JwtStrategy,
     TransactionRepository,
     CommisionRepository,
-    CommisionService
+    CommisionService,
+    CaslAbilityFactory
   ],
 })
 export class TransactionModule {}
