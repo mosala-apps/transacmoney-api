@@ -24,14 +24,23 @@ export const hashPasswordWithBcrypt = async (
 };
 
 export const generateAccountNumber = (): string => {
-  // Declare a digits variable
-  // which stores all digits
-  const digits = '0123456789';
-  let OTP = '';
-  for (let i = 0; i < 6; i++) {
-    OTP += digits[Math.floor(Math.random() * 10)];
+  const groups = 4;
+  const digitsPerGroup = 4;
+
+  let accountNumber = '';
+
+  for (let i = 0; i < groups; i++) {
+    const group = String(
+      Math.floor(Math.random() * Math.pow(10, digitsPerGroup)),
+    ).padStart(digitsPerGroup, '0');
+    accountNumber += group;
+
+    if (i < groups - 1) {
+      accountNumber += ' '; // Ajouter un espace entre les groupes
+    }
   }
-  return `${OTP}-${currentDate()}`;
+
+  return accountNumber;
 };
 
 const currentDate = (): string => {
@@ -42,16 +51,16 @@ const currentDate = (): string => {
   const day = String(currentDate.getDate()).padStart(2, '0');
 
   return `${year}-${month}-${day}`;
-}
+};
 
-export interface IUpdateAmountParams{
+export interface IUpdateAmountParams {
   agency?: number;
-  subAgency?: number
+  subAgency?: number;
 }
 
-export enum EnumActionOnAmount{
-  add="add",
-  retrieve="retrieve"
+export enum EnumActionOnAmount {
+  add = 'add',
+  retrieve = 'retrieve',
 }
 
 export interface StatsData {

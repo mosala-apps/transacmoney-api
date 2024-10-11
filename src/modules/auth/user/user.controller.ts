@@ -21,6 +21,10 @@ export class UserController {
   findAll() {
     return this.userService.findAll();
   }
+  @Get('sub-agents')
+  findAllSubAgents() {
+    return this.userService.findAllSubAgents();
+  }
   @Post('store')
   create(
     @Body() createUserDto: RegisterUserDto,

@@ -39,9 +39,11 @@ export class UserService {
       if (user.role === UserRoleEnum.AGENCY) {
         entity = await this.agencyService.findOne(registerUserDto.agencyId);
         user.agency = entity;
+        //user.agencyResponsible = entity;
       } else if (user.role === UserRoleEnum.SUB_AGENCY) {
-        entity = await this.agencyService.findOne(registerUserDto.subAgencyId);
-        user.subAgency = entity;
+        entity = await this.agencyService.createSubAgency(registerUserDto);
+        user.agency = entity;
+        //user.agencyResponsible = entity;
       }
       console.log(entity);
       const userRepo = await this.userRepository.save(user);
@@ -145,7 +147,34 @@ export class UserService {
       },
     });
   }
-
+  async findAllSubAgents(): Promise<User[]> {
+    return await this.userRepository.find({
+      where: {
+        agency: {
+          type: 'sub-agency',
+        },
+      },
+      relations: ['agency'],
+      loadRelationIds: true,
+      select: {
+        id: true,
+        username: true,
+        email: true,
+        isActive: true,
+        role: true,
+        agency: {
+          id: true,
+          name: true,
+          account: {
+            id: true,
+            amount: true,
+            accountNumber: true,
+          },
+        },
+        createAt: true,
+      },
+    });
+  }
   async findOne(id: number): Promise<User> {
     return await this.userRepository.findOneOrFail({ where: { id } });
   }

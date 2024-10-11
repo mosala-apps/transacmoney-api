@@ -22,6 +22,7 @@ import { CurrencyModule } from './currency/currency.module';
 import { CountryModule } from './country/country.module';
 import { CommisionModule } from './commision/commision.module';
 import { CaslModule } from './casl/casl.module';
+import { CityModule } from './city/city.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { CaslModule } from './casl/casl.module';
     CountryModule,
     CommisionModule,
     CaslModule,
+    CityModule,
   ],
   controllers: [AppController],
   providers: [AppService],

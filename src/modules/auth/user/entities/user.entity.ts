@@ -1,5 +1,12 @@
 import { UserRoleEnum } from 'src/enums/role-role.enum';
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  OneToOne,
+  OneToMany,
+} from 'typeorm';
 import { TimesTampEntity } from '~/ORM/base-entities/times-tamp/times-tamp.entity';
 import { Agency } from '~/modules/agency/entities/agency.entity';
 import { SubAgency } from '~/modules/sub-agency/entities/sub-agency.entity';
@@ -13,8 +20,11 @@ export class User extends TimesTampEntity {
   @Column({ unique: true })
   username: string;
 
+  @Column({ unique: true, nullable: true })
+  phone: string;
+
   @Column({ unique: true })
-  email: string;
+  email?: string;
 
   @Column()
   password: string;
@@ -46,4 +56,7 @@ export class User extends TimesTampEntity {
   @ManyToOne(() => SubAgency, (subAgency) => subAgency.usersSubAgeny)
   // @JoinColumn({ name: 'sub_agency' })
   subAgency: SubAgency;
+
+  @OneToMany(() => Agency, (agency) => agency.responsible)
+  agencyResponsible?: Agency;
 }

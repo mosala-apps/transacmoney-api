@@ -20,12 +20,15 @@ export class UserRepository extends Repository<User> {
   }
   /**
    *
-   * @param identifier (email|usename)
+   * @param identifier (email|username|phone)
    * @returns
    */
   async getByIdentifier(identifier: string): Promise<User> {
     return await this.createQueryBuilder('u')
-      .where('u.username=:identifier or email=:identifier', { identifier })
+      .where(
+        'u.username=:identifier or email=:identifier or phone=:identifier',
+        { identifier },
+      )
       .getOne();
   }
 }
