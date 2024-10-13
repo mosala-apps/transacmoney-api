@@ -1,4 +1,5 @@
 {
+
   "name": "mosala-api",
   "version": "0.0.1",
   "description": "",
@@ -92,4 +93,5 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
   }
+
 }
