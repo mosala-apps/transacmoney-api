@@ -12,11 +12,12 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { User } from './entities/user.entity';
 import { IUserResponse } from '~/interfaces/user.response.interface';
+import { ApiOperation } from '@nestjs/swagger';
 
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
-
+  @ApiOperation({ summary: `Obtenir la liste de tous les utilisateurs` })
   @Get()
   findAll() {
     return this.userService.findAll();
@@ -41,7 +42,6 @@ export class UserController {
   update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
   }
-
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.userService.remove(+id);
