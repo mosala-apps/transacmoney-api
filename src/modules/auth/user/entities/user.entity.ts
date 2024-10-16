@@ -50,7 +50,7 @@ export class User extends TimesTampEntity {
   @Column({ type: 'datetime', nullable: true })
   resetPasswordDate: Date;
 
-  @ManyToOne(() => Agency, (agency) => agency.usersAgeny)
+  @ManyToOne(() => Agency, (agency) => agency.usersAgency)
   agency: Agency;
 
   @ManyToOne(() => SubAgency, (subAgency) => subAgency.usersSubAgeny)
