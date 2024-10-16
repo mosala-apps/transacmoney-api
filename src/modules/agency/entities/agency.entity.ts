@@ -19,7 +19,7 @@ export class Agency extends BaseAgencyEntity {
 
   @OneToMany(() => User, (user) => user.agency)
   @JoinColumn({ name: 'users_agency' })
-  usersAgeny: User[];
+  usersAgency: User[];
 
   @OneToOne(() => User, (user) => user.agencyResponsible)
   @JoinColumn({ name: 'responsible_id' })
