@@ -2,8 +2,8 @@ import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { TransactionEnum, StatusTrasaction } from 'src/enums/transaction.enum';
 import { TimesTampEntity } from '~/ORM/base-entities/times-tamp/times-tamp.entity';
 import { User } from '~/modules/auth/user/entities/user.entity';
-import { Country } from '~/modules/country/entities/country.entity';
 import { Currency } from '~/modules/currency/entities/currency.entity';
+import { City } from '~/modules/city/entities/city.entity';
 
 @Entity('transactions')
 export class Transactions extends TimesTampEntity {
@@ -44,9 +44,12 @@ export class Transactions extends TimesTampEntity {
   @Column()
   amountWithCommision: number;
 
-  @ManyToOne(() => Country)
-  countryFrom
+  @ManyToOne(() => City)
+  cityFrom
 
-  @ManyToOne(() => Country)
-  countryTo
+  @ManyToOne(() => City)
+  cityTo
+
+  @ManyToOne(()=>Currency,(currency)=>currency.transactions)
+  transactionscurrency: Currency;
 }

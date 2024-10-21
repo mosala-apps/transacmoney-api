@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { UserService } from '../auth/user/user.service';
@@ -25,21 +25,22 @@ export class TransactionService {
     private mailerService: MailerService,
     private commisionService: CommisionService,
   ) {}
+
   private verifData = async (transaction) => {
     const exp = await this.userService.findOne(transaction.expeditor);
     if (!exp)
-      throw new NotFoundError(
+      throw new NotFoundException(
         `L'expediteur ${transaction.expeditor} n'existe pas`,
       );
 
     const rec = await this.userService.findOne(transaction.recipient);
     if (!rec)
-      throw new NotFoundError(
+      throw new NotFoundException(
         `L'utilisateur ${transaction.recipient} n'existe pas`,
       );
 
     if (TransactionEnum[transaction.type])
-      throw new NotFoundError(`le type ${transaction.type} n'est pas correcte`);
+      throw new NotFoundException(`le type ${transaction.type} n'est pas correcte`);
   };
 
   async create_subAgency(
@@ -65,7 +66,7 @@ export class TransactionService {
       await this[`create_${user.role}`](transaction.amount, user, 'retrieve');
 
       // add amount on recipient account
-      const userRec = await this.userService.findOne(transaction.executorId);
+      const userRec = await this.userService.findOne(transaction. recipientId);
       await this[`create_${userRec.role}`](transaction.amount, userRec, 'add');
 
       return await this.transactionRepository.save({
@@ -103,7 +104,7 @@ export class TransactionService {
       // ajouter de l'argent dans le compte de l'executant
       const user = await this.userService.findOne(transaction.executorId);
 
-      if (transaction.countryFrom !== transaction.countryTo) {
+      if (transaction.cityFrom !== transaction.cityTo) {
         transaction.amountWithCommision =
           await this.commisionService.calculCommsion(transaction.amount, {
             code: 'INT',
@@ -169,12 +170,12 @@ export class TransactionService {
             name: true,
           },
         },
-        countryFrom: {
+        cityFrom: {
           id: true,
           name: true,
           code: true,
         },
-        countryTo: {
+        cityTo: {
           id: true,
           name: true,
           code: true,
@@ -230,12 +231,12 @@ export class TransactionService {
             name: true,
           },
         },
-        countryFrom: {
+        cityFrom: {
           id: true,
           name: true,
           code: true,
         },
-        countryTo: {
+        cityTo: {
           id: true,
           name: true,
           code: true,

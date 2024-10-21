@@ -40,7 +40,7 @@ export class User extends TimesTampEntity {
   role: string;
 
   @Column({
-    default: false,
+    default: true,
   })
   isActive: boolean;
 

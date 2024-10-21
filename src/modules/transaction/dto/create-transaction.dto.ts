@@ -33,12 +33,12 @@ export class CreateTransactionDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsNumber()
-  countryFrom: number;
+  cityFrom: number;
 
   @ApiProperty()
   @IsNotEmpty()
   @IsNumber()
-  countryTo: number;
+  cityTo: number;
 
   @ApiProperty()
   status: StatusTrasaction;

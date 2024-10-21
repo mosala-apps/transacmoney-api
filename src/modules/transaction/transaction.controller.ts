@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   UnauthorizedException,
+  BadRequestException,
 } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
@@ -28,14 +29,16 @@ export class TransactionController {
   create(@CurrentUser() currentUser: User, @Body() createTransactionDto: CreateTransactionDto) {
     try {
       const ability = this.caslAbilityFactory.createForUser(currentUser)
+      console.log(ability)
+      console.log()
       if (!ability.can(Action.Create, Transactions)){
         throw new UnauthorizedException(
           "Vous n'êtes pas autorisé à effectuer cette action !",
         );
       }
-      
       return this.transactionService.create(createTransactionDto);
     } catch (error) {
+      throw new BadRequestException('Erreur lors de la création de la transaction.');
       
     }
   }
