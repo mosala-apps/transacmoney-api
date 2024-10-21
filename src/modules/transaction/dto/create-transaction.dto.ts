@@ -41,6 +41,7 @@ export class CreateTransactionDto {
   cityTo: number;
 
   @ApiProperty()
+  @IsNotEmpty() 
   status: StatusTrasaction;
   
   @ApiProperty()

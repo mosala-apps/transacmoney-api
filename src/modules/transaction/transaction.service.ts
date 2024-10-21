@@ -60,15 +60,19 @@ export class TransactionService {
   }
 
   async depositAction(transaction: CreateTransactionDto) {
+
+    console.log(transaction)
     try {
       // retrieve amount on expeditor
-      const user = await this.userService.findOne(transaction.executorId);
+      const user = await this.userService.findOne(transaction.expeditorId);
+  
+      console.log(user)
       await this[`create_${user.role}`](transaction.amount, user, 'retrieve');
 
       // add amount on recipient account
       const userRec = await this.userService.findOne(transaction. recipientId);
-      await this[`create_${userRec.role}`](transaction.amount, userRec, 'add');
-
+      console.log(userRec)
+      await this[`create_${userRec.role}`](transaction.amount, userRec, 'add')
       return await this.transactionRepository.save({
         ...transaction,
         status: StatusTrasaction.ACCEPTED,
@@ -340,5 +344,15 @@ export class TransactionService {
 
   async remove(id: number) {
     return await this.transactionRepository.delete(id);
+  }
+
+
+  async create_admin(amount: number, user: User, action: string) {
+    // Vérifiez si l'action est 'retrieve'
+    if (action !== 'retrieve') {
+      throw new Error(`L'action '${action}' n'est pas autorisée pour le rôle 'admin'.`);
+    }
+
+    console.log(action)
   }
 }
