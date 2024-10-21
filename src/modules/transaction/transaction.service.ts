@@ -66,12 +66,12 @@ export class TransactionService {
       // retrieve amount on expeditor
       const user = await this.userService.findOne(transaction.expeditorId);
   
-      console.log(user)
+      console.log("expeditor",user)
       await this[`create_${user.role}`](transaction.amount, user, 'retrieve');
 
       // add amount on recipient account
       const userRec = await this.userService.findOne(transaction. recipientId);
-      console.log(userRec)
+      console.log("recipient",userRec)
       await this[`create_${userRec.role}`](transaction.amount, userRec, 'add')
       return await this.transactionRepository.save({
         ...transaction,
@@ -349,10 +349,17 @@ export class TransactionService {
 
   async create_admin(amount: number, user: User, action: string) {
     // Vérifiez si l'action est 'retrieve'
+    console.log("DDD",user)
     if (action !== 'retrieve') {
-      throw new Error(`L'action '${action}' n'est pas autorisée pour le rôle 'admin'.`);
+      throw new NotFoundException(`L'action '${action}' n'est pas autorisée pour le rôle 'admin'.`);
     }
 
-    console.log(action)
+ 
+
+    const expeditor= await this.userService.findOne(user.id)
+    console.log("dddddd,,,",expeditor)
+  
+
+
   }
 }

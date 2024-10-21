@@ -10,6 +10,7 @@ import {
 import { TimesTampEntity } from '~/ORM/base-entities/times-tamp/times-tamp.entity';
 import { Agency } from '~/modules/agency/entities/agency.entity';
 import { SubAgency } from '~/modules/sub-agency/entities/sub-agency.entity';
+import { Transactions } from '~/modules/transaction/entities/transaction.entity';
 
 @Entity('users')
 // @Unique(['username', 'email'])
@@ -59,4 +60,10 @@ export class User extends TimesTampEntity {
 
   @OneToMany(() => Agency, (agency) => agency.responsible)
   agencyResponsible?: Agency;
+
+  @OneToMany(() => Transactions, (transaction) => transaction.expeditor)
+  transactionsAsExpeditor: Transactions[];
+
+  @OneToMany(() => Transactions, (transaction) => transaction.recipient)
+  transactionsAsRecipient: Transactions[];
 }
