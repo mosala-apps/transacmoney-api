@@ -1,11 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { CreateCityDto } from './dto/create-city.dto';
 import { UpdateCityDto } from './dto/update-city.dto';
+import { Repository } from 'typeorm';
+import { City } from './entities/city.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class CityService {
+
+  constructor(@InjectRepository(City) private  cityRepository:Repository<City>){}
   create(createCityDto: CreateCityDto) {
-    return 'This action adds a new city';
+    const city= this.cityRepository.create(createCityDto)
+
+     return this.cityRepository.save(city)
   }
 
   findAll() {

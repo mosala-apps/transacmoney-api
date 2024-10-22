@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { UserService } from '../auth/user/user.service';
@@ -25,21 +25,22 @@ export class TransactionService {
     private mailerService: MailerService,
     private commisionService: CommisionService,
   ) {}
+
   private verifData = async (transaction) => {
     const exp = await this.userService.findOne(transaction.expeditor);
     if (!exp)
-      throw new NotFoundError(
+      throw new NotFoundException(
         `L'expediteur ${transaction.expeditor} n'existe pas`,
       );
 
     const rec = await this.userService.findOne(transaction.recipient);
     if (!rec)
-      throw new NotFoundError(
+      throw new NotFoundException(
         `L'utilisateur ${transaction.recipient} n'existe pas`,
       );
 
     if (TransactionEnum[transaction.type])
-      throw new NotFoundError(`le type ${transaction.type} n'est pas correcte`);
+      throw new NotFoundException(`le type ${transaction.type} n'est pas correcte`);
   };
 
   async create_subAgency(
@@ -59,15 +60,19 @@ export class TransactionService {
   }
 
   async depositAction(transaction: CreateTransactionDto) {
+
+    console.log(transaction)
     try {
       // retrieve amount on expeditor
-      const user = await this.userService.findOne(transaction.executorId);
+      const user = await this.userService.findOne(transaction.expeditorId);
+  
+      console.log("expeditor",user)
       await this[`create_${user.role}`](transaction.amount, user, 'retrieve');
 
       // add amount on recipient account
-      const userRec = await this.userService.findOne(transaction.executorId);
-      await this[`create_${userRec.role}`](transaction.amount, userRec, 'add');
-
+      const userRec = await this.userService.findOne(transaction. recipientId);
+      console.log("recipient",userRec)
+      await this[`create_${userRec.role}`](transaction.amount, userRec, 'add')
       return await this.transactionRepository.save({
         ...transaction,
         status: StatusTrasaction.ACCEPTED,
@@ -103,7 +108,7 @@ export class TransactionService {
       // ajouter de l'argent dans le compte de l'executant
       const user = await this.userService.findOne(transaction.executorId);
 
-      if (transaction.countryFrom !== transaction.countryTo) {
+      if (transaction.cityFrom !== transaction.cityTo) {
         transaction.amountWithCommision =
           await this.commisionService.calculCommsion(transaction.amount, {
             code: 'INT',
@@ -169,12 +174,12 @@ export class TransactionService {
             name: true,
           },
         },
-        countryFrom: {
+        cityFrom: {
           id: true,
           name: true,
           code: true,
         },
-        countryTo: {
+        cityTo: {
           id: true,
           name: true,
           code: true,
@@ -230,12 +235,12 @@ export class TransactionService {
             name: true,
           },
         },
-        countryFrom: {
+        cityFrom: {
           id: true,
           name: true,
           code: true,
         },
-        countryTo: {
+        cityTo: {
           id: true,
           name: true,
           code: true,
@@ -339,5 +344,22 @@ export class TransactionService {
 
   async remove(id: number) {
     return await this.transactionRepository.delete(id);
+  }
+
+
+  async create_admin(amount: number, user: User, action: string) {
+    // Vérifiez si l'action est 'retrieve'
+    console.log("DDD",user)
+    if (action !== 'retrieve') {
+      throw new NotFoundException(`L'action '${action}' n'est pas autorisée pour le rôle 'admin'.`);
+    }
+
+ 
+
+    const expeditor= await this.userService.findOne(user.id)
+    console.log("dddddd,,,",expeditor)
+  
+
+
   }
 }

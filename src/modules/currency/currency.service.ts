@@ -18,7 +18,8 @@ export class CurrencyService {
         id: true,
         name: true,
         code: true
-      }
+      },
+      relations:['transactions']
     })
   }
 

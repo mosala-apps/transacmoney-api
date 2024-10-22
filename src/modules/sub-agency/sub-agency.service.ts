@@ -7,13 +7,19 @@ import { AccountRepository } from '../account/repository/account.repository';
 import { generateAccountNumber } from '~/helpers';
 import { DeepPartial } from 'typeorm';
 import { Account } from '../account/entities/account.entity';
+import { AgencyTypeEnum } from '~/enums/agency-type.enum';
 
 @Injectable()
 export class SubAgencyService {
   constructor(private readonly subAgencyRepo: SubAgencyRepository, private accountRepo: AccountRepository) {}
   async create(createSubAgencyDto: CreateSubAgencyDto): Promise<SubAgency> {
     try {
-      const subAgency = await this.subAgencyRepo.save(createSubAgencyDto);
+      const subAgency = await this.subAgencyRepo.save(
+        {
+          ...createSubAgencyDto, 
+          type: AgencyTypeEnum.SUB_AGENCY
+        });
+      console.log(SubAgency)
 
       const newAccount: DeepPartial<Account> = {
         accountNumber: generateAccountNumber(), amount: 400,
@@ -21,7 +27,7 @@ export class SubAgencyService {
       }
       await this.accountRepo.save(newAccount)
       return subAgency;
-      return 
+    
     } catch (error) {
       throw new Error(error);
     }
@@ -76,10 +82,21 @@ export class SubAgencyService {
   }
 
   async update(id: number, updateSubAgencyDto: UpdateSubAgencyDto) {
+
+    const existingSubAgency = await this.subAgencyRepo.findOne({ where: { id } });
+  
+    if (!existingSubAgency) {
+      throw new NotFoundException(`La sous-agence avec l'ID ${id} n'existe pas.`);
+    }
     return await this.subAgencyRepo.update(id, updateSubAgencyDto);
   }
 
-  remove(id: number) {
+  async remove(id: number) {
+
+    const existingSubAgency = await this.subAgencyRepo.findOne({ where: { id } });
+    if (!existingSubAgency) {
+      throw new NotFoundException(`La sous-agence avec l'ID ${id} n'existe pas.`);
+    }
     return this.subAgencyRepo.delete(id);
   }
 }
