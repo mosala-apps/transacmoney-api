@@ -16,7 +16,7 @@ export class AgencyService {
   constructor(
     private readonly agencyRepo: AgencyRepository,
     private accountRepo: AccountRepository,
-  ) { }
+  ) {}
   async create(createAgencyDto: CreateAgencyDto): Promise<Agency> {
     try {
       const agency = await this.agencyRepo.save({
@@ -60,13 +60,19 @@ export class AgencyService {
       throw new Error(error);
     }
   }
-  async findAll(): Promise<Agency[]> {
+  async findAllAgencies(): Promise<Agency[]> {
+    return await this.findAllByType('agency');
+  }
+  async findAllSubAgencies(): Promise<Agency[]> {
+    return await this.findAllByType('sub-agency');
+  }
+  private async findAllByType(typeAgency: string): Promise<Agency[]> {
     try {
       return await this.agencyRepo.find({
         where: {
-          type: 'agency',
+          type: typeAgency, // Utilisation du typeAgency pour rendre la méthode générique
         },
-        relations: ['account'],
+        relations: ['account', 'responsible', 'city'],
         loadEagerRelations: false,
         select: {
           createAt: true,
@@ -87,12 +93,16 @@ export class AgencyService {
             email: true,
             role: true,
           },
+          city: {
+            id: true,
+            name: true,
+          },
         },
       });
     } catch (error) {
-      throw new Error(error);
+      throw new Error(error.message);
     }
-  }
+  }  
 
   async findOne(id: number): Promise<Agency> {
     try {

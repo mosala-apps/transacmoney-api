@@ -22,7 +22,11 @@ export class AgencyController {
 
   @Get()
   findAll() {
-    return this.agencyService.findAll();
+    return this.agencyService.findAllAgencies();
+  }
+  @Get('sub-agencies')
+  findAllSubAgencies() {
+    return this.agencyService.findAllSubAgencies();
   }
 
   @Get(':id')
