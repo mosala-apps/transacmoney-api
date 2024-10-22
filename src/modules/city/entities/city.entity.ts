@@ -5,6 +5,7 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Agency } from '~/modules/agency/entities/agency.entity';
 import { Country } from '~/modules/country/entities/country.entity';
 import { TimesTampEntity } from '~/ORM/base-entities/times-tamp/times-tamp.entity';
 
@@ -21,4 +22,7 @@ export class City extends TimesTampEntity {
   @ManyToOne(() => Country, (country: Country) => country.cities)
   @JoinColumn({ name: 'country_id' })
   country: Country;
+
+  @ManyToOne(() => Agency, (agency: Agency) => agency.city, { eager: true })
+  agencies: Agency[];
 }
