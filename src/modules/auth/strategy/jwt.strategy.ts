@@ -16,6 +16,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
   async validate(paylaod: IUser): Promise<Partial<IUserResponse>> {
     try {
+      /// 
       const user = await this.userRepository.getUserActive(paylaod);
       if (Object.keys(user)) {
         delete user.password;

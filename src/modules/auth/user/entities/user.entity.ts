@@ -58,7 +58,10 @@ export class User extends TimesTampEntity {
   // @JoinColumn({ name: 'sub_agency' })
   subAgency: SubAgency;
 
-  @OneToMany(() => Agency, (agency) => agency.responsible)
+  @OneToOne(() => Agency, (agency) => agency.responsible, {
+    onDelete: 'CASCADE',
+    nullable: true
+  })
   agencyResponsible?: Agency;
 
   @OneToMany(() => Transactions, (transaction) => transaction.expeditor)
